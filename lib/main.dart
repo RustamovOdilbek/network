@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:network_requests/pages/detail_page.dart';
 import 'package:network_requests/pages/employees_page.dart';
 import 'package:network_requests/pages/home_page.dart';
+import 'package:network_requests/pages/network_page.dart';
 
 void main() {
   runApp(const MyApp());

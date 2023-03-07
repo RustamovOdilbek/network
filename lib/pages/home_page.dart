@@ -17,7 +17,7 @@ class _HomePageState extends State<HomePage> {
     super.initState();
 
    // _apiList();
-    var post = Post(id: 1, title: "PDP", body: "Odilbek Rustamov", userId: "1");
+    var post = Post(id: 1, title: "PDP", body: "Odilbek Rustamov", userId: 1);
    // _apiPostCreate(post);
     _apiPostDelete(post);
   }

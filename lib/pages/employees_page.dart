@@ -1,10 +1,10 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:network_requests/model/employee_model.dart';
 
 import '../service/employees_service.dart';
 import '../service/log_service.dart';
+import 'detail_page.dart';
 
 class EmployeePage extends StatefulWidget {
   static final String id = "employees_page";
@@ -14,19 +14,29 @@ class EmployeePage extends StatefulWidget {
 }
 
 class _EmployeePageState extends State<EmployeePage> {
+  var isLoading = false;
+  var items = [];
 
   @override
   void initState() {
     super.initState();
 
-    var data = Data(id: 719, employeeName: "Odilbek", employeeSalary: 2000, employeeAge: 20);
-    _apiEmployeeDelete(data);
+    _apiPostList();
   }
 
-  void _apiList(){
-    Network.GET(Network.API_LIST).then((response) => {
-      LogService.i(response.toString())
+
+  void _apiPostList() async{
+    setState(() {
+      isLoading = true;
     });
+    var response = await Network.GET(Network.API_LIST);
+    LogService.i("message");
+    if (response != null) {
+      setState(() {
+        isLoading = false;
+        items = Network.parseEmployeeList(response).data!;
+      });
+    }
   }
 
   void _apiEmployess(var id){
@@ -47,8 +57,8 @@ class _EmployeePageState extends State<EmployeePage> {
     });
   }
 
-  void _apiEmployeeDelete(Data employeet){
-    Network.DELETE(Network.API_DELETE + employeet.id.toString(), Network.paramsEmpty()).then((response) => {
+  void _apiEmployeeDelete(String id){
+    Network.DELETE(Network.API_DELETE, Network.paramsEmpty()).then((response) => {
       LogService.i(response.toString())
     });
   }
@@ -57,8 +67,68 @@ class _EmployeePageState extends State<EmployeePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        color: Colors.green,
+        appBar: AppBar(
+          title: Text("Employee"),
+        ),
+        body: Stack(
+          children: [
+            ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (ctx, index) {
+                return InkWell(
+                  child: itemHomePost(items[index]),
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => DetailPage(task: items[index]),
+                      ),
+                    );
+                  },
+                );;
+              },
+            ),
+
+            isLoading ? Center(
+              child: CircularProgressIndicator(),
+            ) : SizedBox.shrink()
+          ],
+        )
+    );
+  }
+
+  Widget itemHomePost(Data data){
+    return Slidable(
+      endActionPane: ActionPane(
+        extentRatio: 0.25,
+        motion: ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (BuildContext context){
+              //delete api
+            //  _apiEmployeeDelete(data.id.toString());
+            },
+            flex: 3,
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+            icon: Icons.delete,
+            label: "Delete",
+          )
+        ],
+      ),
+      child: Container(
+        width: double.infinity,
+        padding: EdgeInsets.only(top: 20, left: 20, right: 20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(data.employeeName! + data.id.toString(), style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),),
+
+            SizedBox(height: 5,),
+
+            Text( "${data.employeeSalary!}\$"),
+          ],
+        ),
       ),
     );
   }

@@ -85,6 +85,12 @@ class Network{
     return params;
   }
 
-/*  Http Response  */
+/*  Http Parsing  */
+
+  static List<Post> parsePostList(String response) {
+    dynamic json = jsonDecode(response);
+    var data = List<Post>.from(json.map((x) => Post.fromJson(x)));
+    return data;
+  }
 
 }

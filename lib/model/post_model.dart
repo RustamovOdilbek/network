@@ -1,24 +1,24 @@
 class Post {
+  int? userId;
   int? id;
   String? title;
   String? body;
-  String? img_url;
-  String? userId;
 
-  Post({this.id, this.title, this.body, this.img_url, this.userId});
+  Post({this.userId, this.id, this.title, this.body});
 
-  Post.fromJson(Map<String, dynamic> json)
-      : id = json['id'],
-        title = json['title'],
-        body = json['body'],
-        img_url = json['img_url'],
-        userId = json['userId'];
+  Post.fromJson(Map<String, dynamic> json) {
+    userId = json['userId'];
+    id = json['id'];
+    title = json['title'];
+    body = json['body'];
+  }
 
-  Map<String, dynamic> toJson() => {
-    'id': id,
-    'title': title,
-    'body': body,
-    'img_url': img_url,
-    'userId': userId,
-  };
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['userId'] = this.userId;
+    data['id'] = this.id;
+    data['title'] = this.title;
+    data['body'] = this.body;
+    return data;
+  }
 }

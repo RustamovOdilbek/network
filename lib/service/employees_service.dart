@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:network_requests/service/log_service.dart';
 
 import '../model/employee_model.dart';
 
@@ -14,7 +15,7 @@ class Network {
   static String API_EMPLOYEE_ID = "/api/v1/employee/"; //{id}
   static String API_CREATE = "/api/v1/create";
   static String API_UPDATE = "/api/v1/update/"; //{id}
-  static String API_DELETE = "/api/v1/delete/"; //{id}
+  static String API_DELETE = "/api/v1/delete/2"; //{id}
 
   /*  Http Requests  */
 
@@ -59,11 +60,11 @@ class Network {
   static Future<String?> DELETE(String api, Map<String, String> params) async{
     var uri = Uri.http(BASE, api, params);
     var response = await delete(uri, body: jsonEncode(params));
-    if(response.statusCode == 200){
+   // if(response.statusCode == 200){
       return response.body;
-    }else{
-      return null;
-    }
+    // }else{
+    //   return null;
+    // }
   }
 
 /* Http params */
@@ -91,6 +92,14 @@ class Network {
       'age': employee.employeeAge.toString()
     });
     return params;
+  }
+
+  /*  Http Parsing  */
+
+  static Employee parseEmployeeList(String response) {
+    dynamic json = jsonDecode(response);
+    var data = Employee.fromJson(json);
+    return data;
   }
 
 }
